@@ -11,7 +11,7 @@ public abstract class Enemy_Scr : MonoBehaviour
     public static List<Enemy_Scr> enemiesList = new List<Enemy_Scr>();
 
     public TBSToken tbsToken;
-    protected Task turnTask = null; // TODO: вырубать таски, перед закрытием приложени€
+    protected Task turnTask = null;
 
     protected Animator enemyAnimator;
 
@@ -32,6 +32,8 @@ public abstract class Enemy_Scr : MonoBehaviour
         enemyAnimator = GetComponentInChildren<Animator>();
     }
 
+
+    ////---//// ћетоды игровой механики ////---////
     /// <summary>
     /// ћетод, осуществл€ющий получение врагом урона и запуск соответствующей анимации
     /// </summary>
@@ -94,6 +96,10 @@ public abstract class Enemy_Scr : MonoBehaviour
         }
         await CreateCorpseBlock(rollingEnemyPos);
     }
+    /// <summary>
+    /// Task, аналогичный Task'е MakeMove(), за исключением того, что не обновл€етс€ позици€ на карте игры. ѕредназначен дл€ передвижени€ трупа при его скатывании
+    /// </summary>
+    /// <param name="nextPosition">ѕозици€, в которой должен оказатьс€ труп</param>
     protected async Task MakeCorpseRoll(Vector3Int nextPosition) // TODO: заменить анимацию, мб объединить с MakeMove()?
     {
         //UpdateEnemyMapPos(nextPosition);
@@ -144,6 +150,8 @@ public abstract class Enemy_Scr : MonoBehaviour
         await AnimationsDB_Scr.instance.DBRaiseAnim(transform, Field_Scr.MapToWorldPosition(newPosition));
     }
 
+
+    ////---//// ¬спомогательные методы ////---////
     protected Vector3Int GetLowestPosition(Vector3Int startingPos)
     {
         int dropHeight = 1;
