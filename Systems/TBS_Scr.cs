@@ -8,6 +8,7 @@ public class TBS_Scr : MonoBehaviour
 {
     public static List<TBSToken> tokens = new List<TBSToken>();
     private static List<TBSToken> tokensToRemove = new List<TBSToken>();
+    private static List <TBSToken> tokensToAdd = new List<TBSToken>();
 
     private void Start()
     {
@@ -24,7 +25,7 @@ public class TBS_Scr : MonoBehaviour
         {
             newToken = new TBSToken(10, Random.Range(0, 100), false, enemy); // TODO: вставлять скорость врага
             enemy.tbsToken = newToken;
-            tokens.Add(newToken); 
+            tokens.Add(newToken);
         }
     }
 
@@ -49,18 +50,29 @@ public class TBS_Scr : MonoBehaviour
                         await token.enemyRef.MakeTurn();
                 }
             }
-            RemoveTokens();
+            RemoveTokensFromMainList();
+            AddTokensToMainList();
         }
     }
-    public static void AddToRemoveTokens(TBSToken tokenToRemove)
+    public static void AddToTokensToRemove(TBSToken tokenToRemove)
     {
         tokensToRemove.Add(tokenToRemove); 
     }
-    private static void RemoveTokens()
+    public static void AddToTokensToAdd(TBSToken tokenToAdd)
+    {
+        tokensToAdd.Add(tokenToAdd);
+    }
+    private static void RemoveTokensFromMainList()
     {
         foreach (TBSToken token in tokensToRemove)
             tokens.Remove(token);
         tokensToRemove = new List<TBSToken>();
+    }
+    private static void AddTokensToMainList()
+    {
+        foreach (TBSToken token in tokensToAdd)
+            tokens.Add(token);
+        tokensToAdd = new List<TBSToken>();
     }
 
 }
