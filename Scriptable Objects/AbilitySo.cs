@@ -8,18 +8,12 @@ using Abilities;
 public class AbilitySO: ScriptableObject
 {
     public TargetingType targetingType;
-    public Targeting targeting;
+    [HideInInspector] public int range;
+    [HideInInspector] public int targetsCount;
 }
 
 namespace Abilities
 {
-    [System.Serializable]
-    public class Targeting
-    {
-        public int range;
-        public int targetsCount;
-    }
-
     public enum TargetingType
     {
         Ground,
