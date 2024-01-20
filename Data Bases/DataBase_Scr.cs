@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DataBase_Scr : MonoBehaviour
 {
+    // TODO: мб перенести это в namespace и кое-что упростить, напр. IDDict
+
     public enum IDkeys
     {
         wall,

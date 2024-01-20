@@ -63,6 +63,8 @@ public class GroundEnemy_Scr : Enemy_Scr
         Vector3Int nextPosition = possiblePositions[Random.Range(0, possiblePositions.Count)];
 
         await MakeMove(nextPosition);
+
+        Field_Scr.UpdatePathMap(); // TODO: мб убрать для оптимизации и придумать улучшенный поиск пути
     } // TODO: разделить логику хода и передвижения
     protected override async Task MakeAttack()
     {
