@@ -23,14 +23,14 @@ public abstract class Enemy_Scr : MonoBehaviour
 
     // TODO: разделить на разделы как в Field_Scr
 
-
-    private void OnEnable() => enemiesList.Add(this);
-    private void OnDisable() => enemiesList.Remove(this);
-
-    private void Start()
+    private void OnEnable()
     {
         enemyAnimator = GetComponentInChildren<Animator>();
+        enemiesList.Add(this);
     }
+    private void OnDisable() => enemiesList.Remove(this);
+
+
 
 
     ////---//// Методы игровой механики ////---////
@@ -55,7 +55,7 @@ public abstract class Enemy_Scr : MonoBehaviour
         RemoveFromMap();
         await DropCorpse();
         enemiesList.Remove(this);
-        TBS_Scr.AddToRemoveTokens(tbsToken);
+        TBS_Scr.AddToTokensToRemove(tbsToken);
         //enabled = false;
         Destroy(gameObject);
     }
@@ -129,9 +129,14 @@ public abstract class Enemy_Scr : MonoBehaviour
 
         foreach (Vector3Int cellToCheck in cellsToCheck)
         {
+            //убираем клетку, если она выходит за границы игровой карты
+            //если она занята полом или схожим недвижимым объектом
+            //если она занята игроком
             if (!Field_Scr.CheckMapBounds(cellToCheck))
                 continue;
             if (Field_Scr.GetMapCell(cellToCheck).objID < 0)
+                continue;
+            if (Field_Scr.GetMapCell(cellToCheck).objID == IDDict[IDkeys.player])
                 continue;
             freeCells.Add(cellToCheck);
         }
@@ -152,7 +157,12 @@ public abstract class Enemy_Scr : MonoBehaviour
 
 
     ////---//// Вспомогательные методы ////---////
-    protected Vector3Int GetLowestPosition(Vector3Int startingPos)
+    /// <summary>
+    /// Метод возвращающий первую клетку на земле под проверяемой
+    /// </summary>
+    /// <param name="startingPos">Начальная позиция, с которой начинается проверка</param>
+    /// <returns>Клетка на земле</returns>
+    protected Vector3Int GetLowestPosition(Vector3Int startingPos) // TODO: возможно надо переписать
     {
         int dropHeight = 1;
         int curZ = startingPos.z;
@@ -183,6 +193,6 @@ public abstract class Enemy_Scr : MonoBehaviour
 
 
 
-
+    //--//--//--// REWORK ZONE //--//--//--//
 
 }

@@ -97,7 +97,7 @@ public class Field_Scr : MonoBehaviour
         }
 
         AddObstacles();
-        AddEnemies();
+        AddEnemiesOnStart();
         UpdatePathMap();
     }
     /// <summary>
@@ -115,17 +115,21 @@ public class Field_Scr : MonoBehaviour
     /// <summary>
     /// Добавляет на карту объектов всех размещённых в сцене противников
     /// </summary>
-    private void AddEnemies() // TODO: мб улучшить
+    private void AddEnemiesOnStart() // TODO: мб улучшить
     {
         foreach (Enemy_Scr enemy in Enemy_Scr.enemiesList)
         {
-            Vector3Int curEnemyMapPos = WorldToMapPosition(enemy.transform.position);
-            enemy.enemyMapPos = curEnemyMapPos;
-            GetMapCell(curEnemyMapPos).objID = IDDict[IDkeys.enemy];
-            GetMapCell(curEnemyMapPos).enemyRef = enemy;
-            //gameMap[curEnemyMapPos.x, curEnemyMapPos.y, curEnemyMapPos.z].objID = IDDict[IDkeys.enemy];
-            //gameMap[curEnemyMapPos.x, curEnemyMapPos.y, curEnemyMapPos.z].enemyRef = enemy;
+            AddEnemy(enemy);
         }
+    }
+    public static void AddEnemy(Enemy_Scr enemy) // TODO: будут ли проблемы со static?
+    {
+        Vector3Int curEnemyMapPos = WorldToMapPosition(enemy.transform.position);
+        enemy.enemyMapPos = curEnemyMapPos;
+        GetMapCell(curEnemyMapPos).objID = IDDict[IDkeys.enemy];
+        GetMapCell(curEnemyMapPos).enemyRef = enemy;
+        //gameMap[curEnemyMapPos.x, curEnemyMapPos.y, curEnemyMapPos.z].objID = IDDict[IDkeys.enemy];
+        //gameMap[curEnemyMapPos.x, curEnemyMapPos.y, curEnemyMapPos.z].enemyRef = enemy;
     }
 
     /// <summary>

@@ -12,9 +12,6 @@ public class GroundEnemy_Scr : Enemy_Scr
 
     // TODO: при падениях и толчках нужно породумать столкновения с игроком
 
-    /// <summary>
-    /// Task, выполняющий ход врага
-    /// </summary>
     public override async Task MakeTurn()
     {
         if (turnTask != null)
@@ -77,6 +74,8 @@ public class GroundEnemy_Scr : Enemy_Scr
     }
     public override async Task GetPushed(Vector3Int direction)
     {
+        // TODO: добавить силу толчка - чем больше сила, тем дальше передвинется противник + чем больше осталось клеток для передвижения, те больше будет нанесённый урон при столкновении
+
         Vector3Int targetPos = enemyMapPos + direction;
 
         // столкновение с другим объектом или с границами карты
@@ -94,7 +93,7 @@ public class GroundEnemy_Scr : Enemy_Scr
             }
         } else {
             UpdateEnemyMapPos(targetPos);
-            turnTask = AnimationsDB_Scr.instance.DBMovementAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(targetPos));
+            turnTask = AnimationsDB_Scr.instance.DBMovementAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(targetPos)); // TODO: поменять на анимацию отталкивания
             await turnTask;
             turnTask = null;
             turnTask = Fall();
@@ -128,10 +127,13 @@ public class GroundEnemy_Scr : Enemy_Scr
 
     private async Task Fall()
     {
+        //Ищем первую клетку с землёй, если она равна изначальной позиции противника - ничего не делаем
         Vector3Int lowestPos = GetLowestPosition(enemyMapPos);
         if (lowestPos == enemyMapPos)
             return;
+        //Расчёт урона от падения // TODO: можна изменить
         int falldamage = enemyMapPos.z - lowestPos.z;
+        //если на новой позиции есть другой враг
         if (Field_Scr.GetMapCell(lowestPos).objID == IDDict[IDkeys.enemy])
         {
             Enemy_Scr anotherEnemy = Field_Scr.GetMapCell(lowestPos).enemyRef;
