@@ -52,8 +52,8 @@ public class Field_Scr : MonoBehaviour
         Debug.Log("map height - " + mapHeight + " width - " + mapWidth + " player pos - " + playerMapPos.x + ", " + playerMapPos.y + ", " + playerMapPos.z);
 
         // TODO: мб сделать для этого функцию, чтобы не повторяться?
-        //Проставляем стены в соответствии с коллайдерами
-        for (int i = 0; i < mapWidth; i++)
+        //Проставляем стены в соответствии с коллайдерами // TODO: переделывать
+/*        for (int i = 0; i < mapWidth; i++)
         {
             bool hitted = Physics.Raycast(new Vector3(i, 0, mapHeight - 1f), Vector3.back, out hitInfo, mapHeight);
             if (!hitted)
@@ -94,7 +94,7 @@ public class Field_Scr : MonoBehaviour
                 for (int k = 0; k < mapDepth; k++)
                     gameMap[j, i, k].objID = IDDict[IDkeys.wall];
                     //objectMap[j, i, k] = IDDict[IDkeys.wall];
-        }
+        }*/
 
         AddObstacles();
         AddEnemiesOnStart();

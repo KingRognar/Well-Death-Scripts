@@ -8,6 +8,7 @@ public class DebugHelper_Scr : MonoBehaviour
 
     private Vector3 spawnPosition = new Vector3(4, 3, 4);
 
+    public AbilitySO abilitySO;
 
     private void Update()
     {

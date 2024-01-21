@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +6,16 @@ using Abilities;
 [CreateAssetMenu(fileName = "Ability", menuName = "ScriptableObjects/Abilities", order = 1)]
 public class AbilitySO: ScriptableObject
 {
-    public TargetingType targetingType;
-    [HideInInspector] public int range;
-    [HideInInspector] public int targetsCount;
+    public TargetingType targetingType = TargetingType.Ground;
+    public int range = 1;
+    public int targetsCount = 1;
+
+    public AreaType areaType = AreaType.SingleCell;
+    public int areaSize = 1;
+
+    public int damage = 1;
+
+    public List<StatusEffectData> statusEffects = new List<StatusEffectData>();
 }
 
 namespace Abilities
@@ -19,10 +25,30 @@ namespace Abilities
         Ground,
         Enemy,
         MultipleEnemy,
-        Direction
+        Direction,
+        Yourself
     }
     public enum AreaType
     {
-
+        SingleCell,
+        Line,
+        Cone,
+        Circle,
+        Sphere
     }
+    public enum StatusEffectType
+    {
+        Burn,
+        Poison,
+        Hex,
+        Slow
+    }
+    [System.Serializable]
+    public class StatusEffectData
+    {
+        public StatusEffectType statusEffectType;
+        public int duration;
+    }
+
+    
 }
