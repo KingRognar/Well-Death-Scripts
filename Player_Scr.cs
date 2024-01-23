@@ -50,6 +50,8 @@ public class Player_Scr : MonoBehaviour
 
     }
 
+    // TODO: отделить input и поворот камеры от Player_Scr и оставить здесь только геймплейные интеракции
+
     private void UpdatePlayerMapPos(Vector3Int newPos) // TODO: сделать общий метод и запихнуть его в Field_Scr
     {
         Vector3Int oldPos = Field_Scr.playerMapPos;
