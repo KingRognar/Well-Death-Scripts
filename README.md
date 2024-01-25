@@ -1,2 +1,2 @@
 # Scripts
- Scirpts form my project
+ Scirpts from my project
