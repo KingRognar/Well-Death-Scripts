@@ -11,9 +11,44 @@ public class Field_Scr : MonoBehaviour
     private static MapCell[,,] gameMap = new MapCell[0, 0, 0];
     public static Vector3Int playerMapPos = new Vector3Int();
 
+    public GameObject levelPrefab;
+
     void Start()
     {
         InitializeGameMap();
+        GetLevelSize();
+    }
+
+
+    private void GetLevelSize()
+    {
+        MeshFilter levelMF = levelPrefab.GetComponent<MeshFilter>();
+        Vector2 xDim = new Vector2(0, 0);
+        Vector2 yDim = new Vector2(0, 0);
+        Vector2 zDim = new Vector2(0, 0);
+
+        foreach (Vector3 vertex in levelMF.mesh.vertices)
+        {
+            xDim = CompareToMinMaxDimension(vertex.x, xDim);
+            yDim = CompareToMinMaxDimension(vertex.y, yDim);
+            zDim = CompareToMinMaxDimension(vertex.z, zDim);
+        }
+
+        mapHeight = (int)(xDim.y - xDim.x) + 2;
+        mapWidth = (int)(zDim.y - zDim.x) + 2;
+        mapDepth = (int)(yDim.y - yDim.x) + 2;
+    } // TODO: подписать
+    private void GetLevelWalls() // TODO: придумать как из meshFilter'а получить инфу о том какие блоки на карте игры пометить как стены
+    {
+
+    }
+    private Vector2 CompareToMinMaxDimension(float comparable, Vector2 dim)
+    {
+        if (comparable < dim.x)
+            dim.x = comparable;
+        if (comparable > dim.y)
+            dim.y = comparable;
+        return dim;
     }
 
     
@@ -22,23 +57,10 @@ public class Field_Scr : MonoBehaviour
     /// </summary>
     private void InitializeGameMap()
     {
-        // TODO: жижа полная, надо переделывать
-        //с позиции игрока выпускаем 4 рейкаста в разные стороны, из полученных данных берём дистанцию
-        //из чего потом получаем размеры массива карты
+        // TODO: норм подписать
         Vector3 playerPos = Player_Scr.instance.transform.position;
 
-        RaycastHit hitInfo;
-        Physics.Raycast(playerPos, Vector3.forward, out hitInfo, 20f);
-        float forwardDist = hitInfo.distance;
-        Physics.Raycast(playerPos, Vector3.back, out hitInfo, 20f);
-        float backDist = hitInfo.distance;
-        Physics.Raycast(playerPos, Vector3.left, out hitInfo, 20f);
-        float leftDist = hitInfo.distance;
-        Physics.Raycast(playerPos, Vector3.right, out hitInfo, 20f);
-        float rightDist = hitInfo.distance;
-        mapWidth = 10;//(int)(leftDist + rightDist + 2f);
-        mapHeight = 10;//(int)(forwardDist + backDist + 2f);
-        mapDepth = 10; // TODO: мб что-то можно тоже автоматом делать
+        GetLevelSize();
 
         //инициализируем карту объектов и проставляем на ней игрока
         //objectMap = new int[mapWidth, mapHeight, mapDepth];
