@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEditor;
 using Abilities;
@@ -5,27 +6,18 @@ using Abilities;
 [CustomEditor(typeof(AbilitySO))]
 public class AbilityInspector : Editor
 {
-/*    Dictionary<string, Dictionary<string, bool>> showVariablesMap = new Dictionary<string, Dictionary<string, bool>>();
-    string[] variablesNames = new string[] 
-    {
-        "range",
-        "targets count",
-        "area size",
-        "damage"
-    };
-
-    private void OnEnable()
-    {
-        
-    }*/
-
     public override void OnInspectorGUI()
     {
         //base.OnInspectorGUI(); // DO NOT DELETE FOR NOW
-        // TODO: разделить на блоки
-
 
         AbilitySO abilitySO = (AbilitySO)target;
+
+        ////---//// Визуал ////---////
+        float iconPadding = 10;
+        float iconSize = 100;
+        Rect iconRect = new Rect(Screen.width / 2 - iconSize / 2, iconPadding, iconSize, iconSize);
+        abilitySO.abilityIcon = (Texture2D)EditorGUI.ObjectField(iconRect, abilitySO.abilityIcon, typeof(Texture2D), false);
+        EditorGUILayout.Space(iconSize + iconPadding * 2);
 
         ////---//// Выбор цели ////---////
         abilitySO.targetingType = (TargetingType)EditorGUILayout.EnumPopup("Targeting type", abilitySO.targetingType);
@@ -41,6 +33,33 @@ public class AbilityInspector : Editor
         EditorGUILayout.Space();
 
         abilitySO.areaType = (AreaType)EditorGUILayout.EnumPopup("Area type", abilitySO.areaType);
+
+        ////---//// Урон ////---////
+        EditorGUILayout.Space();
+        GUILayout.Label("Damage", EditorStyles.boldLabel);
+
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Label("Damage types:", GUILayout.MaxWidth(140));
+        EditorGUIUtility.labelWidth = 30;
+        for (int i = 0; i < abilitySO.damageTypes.Length; i++)
+        {
+            abilitySO.damageTypes[i].isUsed = EditorGUILayout.Toggle(abilitySO.damageTypes[i].name, abilitySO.damageTypes[i].isUsed, GUILayout.MaxWidth(70));
+        }
+        EditorGUILayout.EndHorizontal();
+        for (int i = 0; i < abilitySO.damageTypes.Length; i++)
+        {
+            if (abilitySO.damageTypes[i].isUsed)
+            {
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Label(abilitySO.damageTypes[i].name, GUILayout.MaxWidth(40));
+                abilitySO.damageTypes[i].min = EditorGUILayout.IntField("Min", abilitySO.damageTypes[i].min);
+                abilitySO.damageTypes[i].max = EditorGUILayout.IntField("Max", abilitySO.damageTypes[i].max);
+                abilitySO.damageTypes[i].max = Mathf.Max(0, abilitySO.damageTypes[i].max);
+                abilitySO.damageTypes[i].min = Mathf.Clamp(abilitySO.damageTypes[i].min, 0, abilitySO.damageTypes[i].max);
+                EditorGUILayout.EndHorizontal();
+            }
+        }
+        EditorGUIUtility.labelWidth = 0;
 
         ////---//// Статусные эффекты ////---////
         EditorGUILayout.Space();
@@ -67,12 +86,4 @@ public class AbilityInspector : Editor
         
         EditorUtility.SetDirty(abilitySO);
     }
-
-/*    void InitializeShowVariablesMap (Dictionary<string, Dictionary<string, bool>> map)
-    {
-        foreach (string name in variablesNames)
-        {
-            map.Add(name,new)
-        }
-    }*/
 }

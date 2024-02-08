@@ -42,7 +42,7 @@ public class Player_Scr : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             isKicking = !isKicking;
             Debug.Log("сменил стойку");

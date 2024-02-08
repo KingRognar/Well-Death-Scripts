@@ -20,7 +20,7 @@ public class FieldEditor : EditorWindow
     public void CreateGUI()
     {
         root = rootVisualElement;
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/FieldEditor.uss");
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Editor/FieldEditor.uss");
         root.styleSheets.Add(styleSheet);
 
         var buttonsBlock = AddElement<VisualElement>(root, "buttonsBlock");
