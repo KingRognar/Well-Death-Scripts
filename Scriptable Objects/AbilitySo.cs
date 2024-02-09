@@ -15,10 +15,8 @@ public class AbilitySO : ScriptableObject
     public AreaType areaType = AreaType.SingleCell;
     public int areaSize = 1;
 
-    public (bool isUsed, string name, int min, int max)[] damageTypes = new (bool, string, int, int)[4]
-    {
-        (false, "‘из", 0,0), (false, "ќгн", 0, 0), (false, "Ёле", 0, 0), (false, "’ол", 0, 0)
-    };
+    // TODO: посто€нно слетает - надо исправить, мб не использовать кортежи?
+    public (bool isUsed, int min, int max)[] damageTypes = new (bool, int, int)[4];
     //public bool[] damageTypes = new bool[4];
     // 0 - физический урон
     // 1 - огненный урон
@@ -43,6 +41,7 @@ namespace Abilities
         SingleCell,
         Line,
         Cone,
+        Diamond,
         Circle,
         Sphere
     }

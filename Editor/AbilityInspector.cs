@@ -38,12 +38,13 @@ public class AbilityInspector : Editor
         EditorGUILayout.Space();
         GUILayout.Label("Damage", EditorStyles.boldLabel);
 
+        string[] damageNames = new string[4] { "‘из", "ќгн", "Ёле", "’ол" };
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("Damage types:", GUILayout.MaxWidth(140));
         EditorGUIUtility.labelWidth = 30;
         for (int i = 0; i < abilitySO.damageTypes.Length; i++)
         {
-            abilitySO.damageTypes[i].isUsed = EditorGUILayout.Toggle(abilitySO.damageTypes[i].name, abilitySO.damageTypes[i].isUsed, GUILayout.MaxWidth(70));
+            abilitySO.damageTypes[i].isUsed = EditorGUILayout.Toggle(damageNames[i], abilitySO.damageTypes[i].isUsed, GUILayout.MaxWidth(70));
         }
         EditorGUILayout.EndHorizontal();
         for (int i = 0; i < abilitySO.damageTypes.Length; i++)
@@ -51,7 +52,7 @@ public class AbilityInspector : Editor
             if (abilitySO.damageTypes[i].isUsed)
             {
                 EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(abilitySO.damageTypes[i].name, GUILayout.MaxWidth(40));
+                GUILayout.Label(damageNames[i], GUILayout.MaxWidth(40));
                 abilitySO.damageTypes[i].min = EditorGUILayout.IntField("Min", abilitySO.damageTypes[i].min);
                 abilitySO.damageTypes[i].max = EditorGUILayout.IntField("Max", abilitySO.damageTypes[i].max);
                 abilitySO.damageTypes[i].max = Mathf.Max(0, abilitySO.damageTypes[i].max);
