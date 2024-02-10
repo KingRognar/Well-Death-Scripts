@@ -6,7 +6,7 @@ using Abilities;
 [CreateAssetMenu(fileName = "Ability", menuName = "ScriptableObjects/Abilities", order = 1)]
 public class AbilitySO : ScriptableObject
 {
-    public Texture2D abilityIcon;
+    public Sprite abilityIcon;
 
     public TargetingType targetingType = TargetingType.Ground;
     public int range = 1;

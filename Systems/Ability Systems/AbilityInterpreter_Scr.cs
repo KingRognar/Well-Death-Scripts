@@ -23,10 +23,12 @@ public class AbilityInterpreter_Scr : MonoBehaviour
 
     // TODO: привз€ать к √√ и к TBS
 
-    public void ExecuteAbility()
+    public async void ExecuteAbility()
     {
         GetEnemiesList();
-        DamageEnemies();
+        Player_Scr.instance.SetInputAwait(false);
+        await DamageEnemies();
+        Player_Scr.instance.PassTurn();
     }
     private void GetEnemiesList()
     {
@@ -35,7 +37,7 @@ public class AbilityInterpreter_Scr : MonoBehaviour
             if (Field_Scr.GetMapCell(target).enemyRef != null)
                 enemiesList.Add(Field_Scr.GetMapCell(target).enemyRef);
     }
-    private async void DamageEnemies()
+    private async Task DamageEnemies()
     {
         // TODO: сделать, чтобы TakeDamage выполн€лись синхронно
         foreach (Enemy_Scr enemy in enemiesList)

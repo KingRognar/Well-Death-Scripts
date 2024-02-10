@@ -16,7 +16,7 @@ public class AbilityInspector : Editor
         float iconPadding = 10;
         float iconSize = 100;
         Rect iconRect = new Rect(Screen.width / 2 - iconSize / 2, iconPadding, iconSize, iconSize);
-        abilitySO.abilityIcon = (Texture2D)EditorGUI.ObjectField(iconRect, abilitySO.abilityIcon, typeof(Texture2D), false);
+        abilitySO.abilityIcon = (Sprite)EditorGUI.ObjectField(iconRect, abilitySO.abilityIcon, typeof(Sprite), false);
         EditorGUILayout.Space(iconSize + iconPadding * 2);
 
         ////---//// Выбор цели ////---////

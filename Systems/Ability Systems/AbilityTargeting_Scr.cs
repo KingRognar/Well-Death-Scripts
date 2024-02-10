@@ -6,6 +6,8 @@ using Abilities;
 
 public class AbilityTargeting_Scr : MonoBehaviour
 {
+    public static AbilityTargeting_Scr instance;
+
     //-// ѕеременные типа прицеливани€ 
     // TODO: потом просто запихнуть сюда scriptable object абилки
     public TargetingType targetingType;
@@ -23,6 +25,7 @@ public class AbilityTargeting_Scr : MonoBehaviour
     public List<Transform> markersList = new List<Transform>();
 
     //-// ѕеременные дл€ взаимодействи€ с другими скриптами
+    public bool isAwaitingInput = false;
     public List<Vector3Int> sendTargetsList = new List<Vector3Int>();
 
     //-// ѕеременные рейкаста
@@ -37,7 +40,13 @@ public class AbilityTargeting_Scr : MonoBehaviour
 
     // TODO: подписать и прибратьс€ в переменных
 
-
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+            Destroy(gameObject);
+        else
+            instance = this;
+    }
     private void Start()
     {
         OnAreaTypeChange();
@@ -75,9 +84,8 @@ public class AbilityTargeting_Scr : MonoBehaviour
                 previousMarkerPosition = markerPosition;
                 areaHighlight(markerPosition);
             }
-            if (!Input.GetKeyDown(KeyCode.Mouse0))
-                return;
-            SendTargetsAndExecuteAbility();
+            if (Input.GetKeyDown(KeyCode.Mouse0) && isAwaitingInput)
+                SendTargetsAndExecuteAbility();
         }  
     }
 
@@ -250,7 +258,7 @@ public class AbilityTargeting_Scr : MonoBehaviour
 
     private void SendTargetsAndExecuteAbility()
     {
-        Debug.Log("отправил " + sendTargetsList.Count + " целей интерпретатору");
+        Debug.Log("выполн€ю абилку");
 
         AbilityInterpreter_Scr.instance.targetsList = sendTargetsList;
         AbilityInterpreter_Scr.instance.ExecuteAbility();

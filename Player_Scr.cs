@@ -23,11 +23,14 @@ public class Player_Scr : MonoBehaviour
     public TBSToken tbsToken;
 
     private bool isAwaitingTurn = false;
+    private bool isAwaitingInput = false;
 
     [SerializeField]
     private int damage = 4;
     private int healthCur = 20, healthMax = 20;
     bool isKicking = false;
+
+    public AbilitySO[] playerAbilities = new AbilitySO[5];
 
     private void Awake()
     {
@@ -51,6 +54,7 @@ public class Player_Scr : MonoBehaviour
     }
 
     // TODO: отделить input и поворот камеры от Player_Scr и оставить здесь только геймплейные интеракции
+    // TODO: разделить на разделы переменные и подисать эти разделы
 
     private void UpdatePlayerMapPos(Vector3Int newPos) // TODO: сделать общий метод и запихнуть его в Field_Scr
     {
@@ -87,10 +91,20 @@ public class Player_Scr : MonoBehaviour
     public async Task AwaitTurn()
     {
         isAwaitingTurn = true;
+        SetInputAwait(true);
         while (isAwaitingTurn && !Input.GetKeyDown(KeyCode.P))
         {
             await Task.Yield();
         }
+    }
+    public void PassTurn()
+    {
+        isAwaitingTurn = false;
+    } // TODO: подписать и запихать
+    public void SetInputAwait(bool inpBool)
+    {
+        isAwaitingInput = inpBool; // TODO: сделать get; set; с функцией для изменения и в AbilityTargeting_Scr ?
+        AbilityTargeting_Scr.instance.isAwaitingInput = inpBool;
     }
     /// <summary>
     /// Метод вызываемый при нажатии клавиш передвижения
@@ -99,10 +113,11 @@ public class Player_Scr : MonoBehaviour
     {
         if (!inpContext.started) //проходим дальше, если клавиша нажата
             return;
-        if (!isAwaitingTurn) //проходим дальше, если ожидается ввод игрока
+        if (!isAwaitingInput) //проходим дальше, если инпут не отключён
             return;
         if (turnTask != null && !turnTask.IsCompleted) //проходим дальше, если Task'и анимации завершены или остутствуют
             return;
+
 
 
         Vector2 movementDirection = inpContext.ReadValue<Vector2>();
@@ -113,24 +128,29 @@ public class Player_Scr : MonoBehaviour
 
         if (Field_Scr.GetMapCell(nextPos).objID == IDDict[IDkeys.enemy]) // TODO: переписать
         {
+            SetInputAwait(false);
             turnTask = MakeAttack(nextPos);
             await turnTask;
             turnTask = null;
-            isAwaitingTurn = false;
+            PassTurn();
             return;
         }
         if (nextPos != Field_Scr.playerMapPos)
         {
+            SetInputAwait(false);
             UpdatePlayerMapPos(nextPos);
             turnTask = AnimationsDB_Scr.instance.DBMovementAnim(transform, playerAnimator, animPos); // TODO: переписать
             await turnTask;
             turnTask = null;
-            isAwaitingTurn = false;
+            PassTurn();
         } else {
+            SetInputAwait(false);
             turnTask = BumpAnim(movementDirection);
             await turnTask;
             turnTask = null;
+            SetInputAwait(true);
         }
+
     }
     /// <summary>
     /// Метод вызываемый при нажатии клавиш поворота камеры
@@ -230,6 +250,9 @@ public class Player_Scr : MonoBehaviour
         float temp = 0;
         while (temp != 1)
         {
+            if (destroyCancellationToken.IsCancellationRequested)
+                return;
+
             if (temp < 0.5f)
                 nextXZ = Vector2.MoveTowards(nextXZ, targetXZ, movementSpeed * Time.deltaTime);
             else
@@ -267,6 +290,9 @@ public class Player_Scr : MonoBehaviour
         float temp = 0;
         while(temp != 1)
         {
+            if (destroyCancellationToken.IsCancellationRequested)
+                return;
+
             temp = Mathf.MoveTowards(temp, 1, rotationSpeed * Time.deltaTime);
             camera.rotation = Quaternion.Lerp(startQuat, targetQuat, cameraRotationCurve.Evaluate(temp));
             camera.position = DataBase_Scr.SlerpWO(startPos, targetPos, currentMapTrans.position + offset, cameraRotationCurve.Evaluate(temp)); // TODO: придумать получше вариант получения позиции объекта карты
