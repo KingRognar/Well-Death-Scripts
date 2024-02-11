@@ -16,8 +16,8 @@ public class AbilitySO : ScriptableObject
     public int areaSize = 1;
 
     // TODO: постоянно слетает - надо исправить, мб не использовать кортежи?
-    public (bool isUsed, int min, int max)[] damageTypes = new (bool, int, int)[4];
-    //public bool[] damageTypes = new bool[4];
+    public bool[] damageTypes = new bool[4];
+    public int[] damageNumbers = new int[8]; // NOTE: размер в два раза больше чем damageTypes, в начале идут значения мин дамага, потом макс
     // 0 - физический урон
     // 1 - огненный урон
     // 2 - электрический урон

@@ -8,7 +8,13 @@ public class AbilityInspector : Editor
 {
     public override void OnInspectorGUI()
     {
-        //base.OnInspectorGUI(); // DO NOT DELETE FOR NOW
+        //OldVersion();
+        NewVersion();
+    }
+
+    private void OldVersion()
+    {
+        /*//base.OnInspectorGUI(); // DO NOT DELETE FOR NOW
 
         AbilitySO abilitySO = (AbilitySO)target;
 
@@ -75,7 +81,7 @@ public class AbilityInspector : Editor
             abilitySO.statusEffects.Add(new StatusEffectData());
         while (statusEffectsCount < abilitySO.statusEffects.Count)
             abilitySO.statusEffects.RemoveAt(abilitySO.statusEffects.Count - 1);
-        
+
         for (int i = 0; i < abilitySO.statusEffects.Count; i++)
         {
             StatusEffectData statusEffect = abilitySO.statusEffects[i];
@@ -84,7 +90,88 @@ public class AbilityInspector : Editor
             statusEffect.duration = EditorGUILayout.IntField("duration", statusEffect.duration);
             EditorGUILayout.EndVertical();
         }
-        
-        EditorUtility.SetDirty(abilitySO);
+
+        EditorUtility.SetDirty(abilitySO);*/
+    }
+
+    // TODO: добавить остальные параметры и вариативность, мб ещё каких плюшек насыпать 
+    private void NewVersion()
+    {
+        serializedObject.Update();
+
+        float padding = 10;
+
+        ////---//// Визуал ////---////
+        SerializedProperty iconSP = serializedObject.FindProperty("abilityIcon");
+        Texture2D texture = AssetPreview.GetAssetPreview(iconSP.objectReferenceValue);
+        if (texture != null) GUILayout.Label(texture, EditorStyles.centeredGreyMiniLabel);
+        EditorGUILayout.Space(padding);
+        EditorGUILayout.PropertyField(iconSP);
+
+        ////---//// Выбор цели ////---////
+        EditorGUILayout.Space(padding);
+        SerializedProperty targetingEnumSP = serializedObject.FindProperty("targetingType");
+        EditorGUILayout.PropertyField(targetingEnumSP);
+        if (targetingEnumSP.enumValueIndex == (int)TargetingType.Ground)
+        {
+            GUILayout.Label("описание?");
+        }
+
+        ////---//// Область действия ////---////
+        EditorGUILayout.Space(padding);
+        SerializedProperty areaEnumSP = serializedObject.FindProperty("areaType");
+        EditorGUILayout.PropertyField(areaEnumSP);
+        if (areaEnumSP.enumValueIndex != (int)AreaType.SingleCell && 
+            areaEnumSP.enumValueIndex != (int)AreaType.Line)
+        {
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("areaSize"));
+        }
+
+        ////---//// Урон ////---////
+        EditorGUILayout.Space(padding);
+        GUILayout.Label("Damage", EditorStyles.boldLabel);
+
+        SerializedProperty dmgTypesSP = serializedObject.FindProperty("damageTypes");
+
+        string[] damageNames = new string[4] { "Phy", "Fir", "Lig", "Ice" };
+        GUILayout.BeginHorizontal();
+        EditorGUIUtility.labelWidth = 30;
+        for (int i = 0; i < dmgTypesSP.arraySize; i++)
+        {
+            EditorGUILayout.PropertyField(dmgTypesSP.GetArrayElementAtIndex(i), new GUIContent(damageNames[i]), GUILayout.MaxWidth(100));
+        }
+        EditorGUIUtility.labelWidth = 0;
+        GUILayout.EndHorizontal();
+
+        SerializedProperty dmgNumbersSP = serializedObject.FindProperty("damageNumbers");
+        for (int i = 0; i < dmgNumbersSP.arraySize/2; i++)
+        {
+            if (!dmgTypesSP.GetArrayElementAtIndex(i).boolValue)
+                continue;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(damageNames[i]);
+            EditorGUIUtility.labelWidth = 30;
+            EditorGUILayout.PropertyField(dmgNumbersSP.GetArrayElementAtIndex(i), new GUIContent("Min"), GUILayout.MaxWidth(150));
+            EditorGUILayout.PropertyField(dmgNumbersSP.GetArrayElementAtIndex(i + 4), new GUIContent("Max"), GUILayout.MaxWidth(150));
+            EditorGUIUtility.labelWidth = 0;
+            GUILayout.EndHorizontal();
+        }
+
+        FixDamageValues(dmgNumbersSP);
+
+        ////---//// Статусные эффекты ////---////
+        EditorGUILayout.Space(padding);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("statusEffects"));
+
+        serializedObject.ApplyModifiedProperties();
+
+    }
+
+    private void FixDamageValues(SerializedProperty dmgSP)
+    {
+        for (int i = 0; i < dmgSP.arraySize; i++)
+        {
+            dmgSP.GetArrayElementAtIndex(i).intValue = Mathf.Max(0, dmgSP.GetArrayElementAtIndex(i).intValue);
+        }
     }
 }
