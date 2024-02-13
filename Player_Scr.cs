@@ -24,10 +24,10 @@ public class Player_Scr : MonoBehaviour
 
     private bool isAwaitingTurn = false;
     private bool isAwaitingInput = false;
-
+    
     [SerializeField]
     private int damage = 4;
-    private int healthCur = 20, healthMax = 20;
+    public int healthCur = 20, healthMax = 20;
     bool isKicking = false;
 
     public AbilitySO[] playerAbilities = new AbilitySO[5];
@@ -70,12 +70,14 @@ public class Player_Scr : MonoBehaviour
     {
         _ = AnimationsDB_Scr.instance.DBGetHitAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition));
         healthCur -= damage;
+        Healthbar_Scr.instance.updateHealthbar();
         if (healthCur <= 0)
             Die();
     }
     public void TakeDamage(int damage)
     {
         healthCur -= damage;
+        Healthbar_Scr.instance.updateHealthbar();
         if (healthCur <= 0)
             Die();
     }
