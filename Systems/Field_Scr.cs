@@ -19,6 +19,7 @@ public class Field_Scr : MonoBehaviour
         GetLevelSize();
     }
 
+    // TODO: сделать отдельный скрипт и запихнуть туда всю инициализацию
 
     private void GetLevelSize()
     {
@@ -121,6 +122,7 @@ public class Field_Scr : MonoBehaviour
         AddObstacles();
         AddEnemiesOnStart();
         UpdatePathMap();
+        CorpsePile_Scr.instance.GenerateMesh();
     }
     /// <summary>
     /// Добавляет на карту объектов все размещённые в сцене препятствия

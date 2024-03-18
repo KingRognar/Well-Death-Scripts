@@ -21,10 +21,15 @@ public abstract class Enemy_Scr : MonoBehaviour
 
     [SerializeField] private GameObject corpseBlock;
 
+    private EnemyHealthbar_Scr enemyHealthbar;
+
     // TODO: разделить на разделы как в Field_Scr
 
     private void OnEnable()
     {
+        enemyHealthbar = GetComponentInChildren<EnemyHealthbar_Scr>();
+        if (enemyHealthbar != null)
+            enemyHealthbar.UpdateHealthbar(healthMax, healthCur);
         enemyAnimator = GetComponentInChildren<Animator>();
         enemiesList.Add(this);
     }
@@ -42,6 +47,8 @@ public abstract class Enemy_Scr : MonoBehaviour
     public async Task TakeDamage(int damage, Vector3Int directionOfHit)
     {
         healthCur -= damage;
+        if (enemyHealthbar != null)
+            enemyHealthbar.UpdateHealthbar(healthMax, healthCur);
         await AnimationsDB_Scr.instance.DBGetHitAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(directionOfHit));
         if (healthCur <= 0)
             await Die();
