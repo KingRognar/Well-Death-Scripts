@@ -101,7 +101,7 @@ public class AnimationsDB_Scr : MonoBehaviour
         transToAnim.localPosition = targetPos;
     }
     
-    public async Task DBAttcakAnim(Transform transToAnim, Animator animator, Vector3 targetPos)
+    public async Task DBAttcakAnim(Transform transToAnim, Animator animator, Vector3 targetPos, CreatureSoundController_Scr soundController)
     {
         Vector3 startPos = transToAnim.position;
         Vector3 dif = targetPos - startPos;
@@ -110,6 +110,8 @@ public class AnimationsDB_Scr : MonoBehaviour
         float nextAnimTime = animCurve.keys[1].time;
 
         _ = DBRotateAnim(transToAnim.GetChild(0).GetChild(0), targetPos); // TODO: поменять
+
+        soundController.PlaySwipe();
 
         animator.Play("AttackPrep State");
         bool isPlayingNextAnim = false;
@@ -134,7 +136,7 @@ public class AnimationsDB_Scr : MonoBehaviour
         animator.Play("Idle State");
     }
     
-    public async Task DBGetHitAnim(Transform transToAnim, Animator animator, Vector3 targetPos)
+    public async Task DBGetHitAnim(Transform transToAnim, Animator animator, Vector3 targetPos, CreatureSoundController_Scr soundController)
     {
         Vector3 startPos = transToAnim.position;
         Vector3 dif = targetPos - startPos;
@@ -143,6 +145,7 @@ public class AnimationsDB_Scr : MonoBehaviour
         float nextAnimTime = animCurve.keys[1].time;
 
         _ = DBRotateAnim(transToAnim.GetChild(0).GetChild(0), targetPos); // TODO: поменять
+        //soundController.PlayHit();
 
         bool isPlayingNextAnim = false;
         float temp = 0;

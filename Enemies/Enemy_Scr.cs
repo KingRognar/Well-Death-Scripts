@@ -15,6 +15,8 @@ public abstract class Enemy_Scr : MonoBehaviour
 
     protected Animator enemyAnimator;
 
+    protected CreatureSoundController_Scr soundCtrl;
+
     [SerializeField] protected int healthMax = 10, healthCur = 10;
     [SerializeField] protected int enemyDamage = 2;
     public Vector3Int enemyMapPos; // TODO: придумать как лучше получать позицию
@@ -31,6 +33,7 @@ public abstract class Enemy_Scr : MonoBehaviour
         if (enemyHealthbar != null)
             enemyHealthbar.UpdateHealthbar(healthMax, healthCur);
         enemyAnimator = GetComponentInChildren<Animator>();
+        soundCtrl = GetComponent<CreatureSoundController_Scr>();
         enemiesList.Add(this);
     }
     private void OnDisable() => enemiesList.Remove(this);
@@ -49,7 +52,7 @@ public abstract class Enemy_Scr : MonoBehaviour
         healthCur -= damage;
         if (enemyHealthbar != null)
             enemyHealthbar.UpdateHealthbar(healthMax, healthCur);
-        await AnimationsDB_Scr.instance.DBGetHitAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(directionOfHit));
+        await AnimationsDB_Scr.instance.DBGetHitAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(directionOfHit), soundCtrl);
         if (healthCur <= 0)
             await Die();
     }

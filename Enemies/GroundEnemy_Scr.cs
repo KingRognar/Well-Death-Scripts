@@ -68,7 +68,7 @@ public class GroundEnemy_Scr : Enemy_Scr
         // TODO: вставить проверки на возможность атаки
 
         Player_Scr.instance.TakeDamage(enemyDamage, enemyMapPos);
-        turnTask = AnimationsDB_Scr.instance.DBAttcakAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(Field_Scr.playerMapPos));
+        turnTask = AnimationsDB_Scr.instance.DBAttcakAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(Field_Scr.playerMapPos), soundCtrl);
         await turnTask;
         turnTask = null;
     }

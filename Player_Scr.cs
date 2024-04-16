@@ -24,7 +24,9 @@ public class Player_Scr : MonoBehaviour
 
     private bool isAwaitingTurn = false;
     private bool isAwaitingInput = false;
-    
+
+    private CreatureSoundController_Scr sountCtrl;
+
     [SerializeField]
     private int damage = 4;
     public int healthCur = 20, healthMax = 20;
@@ -42,6 +44,7 @@ public class Player_Scr : MonoBehaviour
     private void Start()
     {
         playerAnimator = GetComponentInChildren<Animator>();
+        sountCtrl = GetComponent<CreatureSoundController_Scr>();
     }
     private void Update()
     {
@@ -68,7 +71,7 @@ public class Player_Scr : MonoBehaviour
     ////---//// Игровые механики ////---////
     public void TakeDamage(int damage, Vector3Int enemyPosition) // TODO: получать пиздов
     {
-        _ = AnimationsDB_Scr.instance.DBGetHitAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition));
+        _ = AnimationsDB_Scr.instance.DBGetHitAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition),sountCtrl);
         healthCur -= damage;
         Healthbar_Scr.instance.updateHealthbar();
         if (healthCur <= 0)
@@ -222,11 +225,11 @@ public class Player_Scr : MonoBehaviour
 
         if (!isKicking)
         {
-            _ = AnimationsDB_Scr.instance.DBAttcakAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition));
+            _ = AnimationsDB_Scr.instance.DBAttcakAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), sountCtrl);
             await targetEnemy.TakeDamage(damage, Field_Scr.playerMapPos);
         } else {
             _ = targetEnemy.GetPushed(targetEnemy.enemyMapPos - Field_Scr.playerMapPos);
-            await AnimationsDB_Scr.instance.DBAttcakAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition));
+            await AnimationsDB_Scr.instance.DBAttcakAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), sountCtrl);
 
         }
 
