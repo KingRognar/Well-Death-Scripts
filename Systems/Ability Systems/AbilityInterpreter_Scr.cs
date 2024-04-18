@@ -26,9 +26,9 @@ public class AbilityInterpreter_Scr : MonoBehaviour
     public async void ExecuteAbility()
     {
         GetEnemiesList();
-        InputController_Scr.instance.isAwaitingInput = false;
-        await DamageEnemies(); // TODO: должен подождать пока все враги получат урон
-        InputController_Scr.instance.isAwaitingTurn = false;
+        Player_Scr.instance.SetInputAwait(false);
+        await DamageEnemies();
+        Player_Scr.instance.PassTurn();
     }
     private void GetEnemiesList()
     {
