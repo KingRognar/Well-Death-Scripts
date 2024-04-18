@@ -43,7 +43,7 @@ public class TBS_Scr : MonoBehaviour
                 if (token.isPalyerToken)
                 {
                     Debug.Log("жду ход игрока");
-                    await Player_Scr.instance.AwaitTurn();
+                    await InputController_Scr.instance.AwaitTurn();
                 } else {
                     //Debug.Log("жду ход " + token.enemyRef.name);
                     if (token.enemyRef != null)
