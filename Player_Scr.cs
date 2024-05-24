@@ -34,6 +34,9 @@ public class Player_Scr : MonoBehaviour
 
     public AbilitySO[] playerAbilities = new AbilitySO[5];
 
+    [SerializeField]
+    private ParryBar_Scr parryBar;
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -69,13 +72,20 @@ public class Player_Scr : MonoBehaviour
     }
 
     ////---//// Игровые механики ////---////
-    public void TakeDamage(int damage, Vector3Int enemyPosition) // TODO: получать пиздов
+    public async void TakeDamage(int damage, Vector3Int enemyPosition) // TODO: получать пиздов
     {
         _ = AnimationsDB_Scr.instance.DBGetHitAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition),sountCtrl);
-        healthCur -= damage;
-        Healthbar_Scr.instance.updateHealthbar();
-        if (healthCur <= 0)
-            Die();
+        parryBar.gameObject.SetActive(true);
+        Task<bool> counterTask = parryBar.TryToCounter();
+        await counterTask;
+        if (!counterTask.Result)
+        {
+            healthCur -= damage;
+            Healthbar_Scr.instance.updateHealthbar();
+            if (healthCur <= 0)
+                Die();
+        }
+
     }
     public void TakeDamage(int damage)
     {
@@ -180,11 +190,11 @@ public class Player_Scr : MonoBehaviour
     } 
     Vector3Int PositionAvailability(Vector3Int position) // TODO: переделать для атак
     {
-        Vector3Int pPos = Field_Scr.playerMapPos;
+        Vector3Int playerPos = Field_Scr.playerMapPos;
 
         //проверяем не выходит ли позиция за границы X и Y 
         if (!Field_Scr.CheckMapBounds(position))
-            return pPos;
+            return playerPos;
 
         //проверяем свободна ли клетка на проверяемой позиции, если да - проверяем что под ней
         if (Field_Scr.GetMapCell(position).objID >= 0)
@@ -193,15 +203,21 @@ public class Player_Scr : MonoBehaviour
             int dropHeight = DropHeight(position);
             if (dropHeight > 2)
                 TakeDamage(dropHeight - 2);
+            Vector3Int nextPos = position - new Vector3Int(0, 0, dropHeight);
+
+            //проверка на врага
+            if (Field_Scr.CheckMapBounds(nextPos - new Vector3Int(0, 0, 1)) &&
+                Field_Scr.GetMapCell(nextPos - new Vector3Int(0, 0, 1)).enemyRef != null)
+                return playerPos;
             return (position - new Vector3Int(0, 0, dropHeight));
         }
 
         //проверяем свободны ли клетки над проверяемой позицией и над игроком, если да - возвращаем перую
         if (Field_Scr.GetMapCell(position + new Vector3Int(0, 0, 1)).objID >= 0 &&
-            Field_Scr.GetMapCell(pPos + new Vector3Int(0, 0, 1)).objID == 0) 
+            Field_Scr.GetMapCell(playerPos + new Vector3Int(0, 0, 1)).objID == 0) 
             return position + new Vector3Int(0, 0, 1);
 
-        return pPos;
+        return playerPos;
     }
     /// <summary>
     /// Метод возвращающий количество свободных клеток под проверяемой позицией
