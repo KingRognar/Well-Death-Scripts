@@ -72,9 +72,9 @@ public class Player_Scr : MonoBehaviour
     }
 
     ////---//// Игровые механики ////---////
-    public async void TakeDamage(int damage, Vector3Int enemyPosition) // TODO: получать пиздов
+    public async Task TakeDamage(int damage, Vector3Int enemyPosition) // TODO: получать пиздов
     {
-        _ = AnimationsDB_Scr.instance.DBGetHitAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition),sountCtrl);
+
         parryBar.gameObject.SetActive(true);
         Task<bool> counterTask = parryBar.TryToCounter();
         await counterTask;
@@ -84,6 +84,11 @@ public class Player_Scr : MonoBehaviour
             Healthbar_Scr.instance.updateHealthbar();
             if (healthCur <= 0)
                 Die();
+            _ = AnimationsDB_Scr.instance.DBGetHitAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), sountCtrl);
+        }
+        else
+        {
+            _ = AnimationsDB_Scr.instance.DBParryAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition));
         }
 
     }

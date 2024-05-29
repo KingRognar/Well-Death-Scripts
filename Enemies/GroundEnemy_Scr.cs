@@ -67,9 +67,12 @@ public class GroundEnemy_Scr : Enemy_Scr
     {
         // TODO: вставить проверки на возможность атаки
 
-        Player_Scr.instance.TakeDamage(enemyDamage, enemyMapPos);
+        Task[] tasksList = new Task[2];
+        tasksList[0] = Player_Scr.instance.TakeDamage(enemyDamage, enemyMapPos);
         turnTask = AnimationsDB_Scr.instance.DBAttcakAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(Field_Scr.playerMapPos), soundCtrl);
-        await turnTask;
+        tasksList[1] = turnTask;
+        await Task.WhenAll(tasksList);
+
         turnTask = null;
     }
     public override async Task GetPushed(Vector3Int direction)

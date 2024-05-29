@@ -140,8 +140,8 @@ public class AnimationsDB_Scr : MonoBehaviour
     {
         Vector3 startPos = transToAnim.position;
         Vector3 dif = targetPos - startPos;
-        float animationSpeed = 2f;
-        AnimationCurve animCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.7f, 0f), new Keyframe(0.85f, -0.3f), new Keyframe(1f, 0f));
+        float animationSpeed = 6.6f;
+        AnimationCurve animCurve = new AnimationCurve(new Keyframe(0f, 0f),  new Keyframe(0.5f, -0.3f), new Keyframe(1f, 0f));
         float nextAnimTime = animCurve.keys[1].time;
 
         _ = DBRotateAnim(transToAnim.GetChild(0).GetChild(0), targetPos); // TODO: поменять
@@ -159,6 +159,38 @@ public class AnimationsDB_Scr : MonoBehaviour
             if (!isPlayingNextAnim && temp >= nextAnimTime)
             {
                 animator.Play("GetHit State");
+                isPlayingNextAnim = true;
+            }
+
+            temp = Mathf.MoveTowards(temp, 1, animationSpeed * Time.deltaTime);
+            await Task.Yield();
+        }
+        transToAnim.position = startPos;
+        animator.Play("Idle State");
+    }
+    public async Task DBParryAnim(Transform transToAnim, Animator animator, Vector3 targetPos)
+    {
+        Vector3 startPos = transToAnim.position;
+        Vector3 dif = targetPos - startPos;
+        float animationSpeed = 6.6f;
+        AnimationCurve animCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.5f, -0.1f), new Keyframe(1f, 0f));
+        float nextAnimTime = animCurve.keys[1].time;
+
+        _ = DBRotateAnim(transToAnim.GetChild(0).GetChild(0), targetPos); // TODO: поменять
+        //soundController.PlayHit();
+
+        bool isPlayingNextAnim = false;
+        float temp = 0;
+        while (temp != 1)
+        {
+            if (destroyCancellationToken.IsCancellationRequested)
+                return;
+
+            transToAnim.position = startPos + dif * animCurve.Evaluate(temp);
+
+            if (!isPlayingNextAnim && temp >= nextAnimTime)
+            {
+                animator.Play("Parry State");
                 isPlayingNextAnim = true;
             }
 
