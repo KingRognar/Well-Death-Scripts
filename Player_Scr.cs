@@ -25,7 +25,7 @@ public class Player_Scr : MonoBehaviour
     private bool isAwaitingTurn = false;
     private bool isAwaitingInput = false;
 
-    private CreatureSoundController_Scr sountCtrl;
+    private CreatureSoundController_Scr soundCtrl;
 
     [SerializeField]
     private int damage = 4;
@@ -47,7 +47,7 @@ public class Player_Scr : MonoBehaviour
     private void Start()
     {
         playerAnimator = GetComponentInChildren<Animator>();
-        sountCtrl = GetComponent<CreatureSoundController_Scr>();
+        soundCtrl = GetComponent<CreatureSoundController_Scr>();
     }
     private void Update()
     {
@@ -84,11 +84,11 @@ public class Player_Scr : MonoBehaviour
             Healthbar_Scr.instance.updateHealthbar();
             if (healthCur <= 0)
                 Die();
-            _ = AnimationsDB_Scr.instance.DBGetHitAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), sountCtrl);
+            _ = AnimationsDB_Scr.instance.DBGetHitAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), soundCtrl);
         }
         else
         {
-            _ = AnimationsDB_Scr.instance.DBParryAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition));
+            _ = AnimationsDB_Scr.instance.DBParryAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), soundCtrl);
         }
 
     }
@@ -246,11 +246,11 @@ public class Player_Scr : MonoBehaviour
 
         if (!isKicking)
         {
-            _ = AnimationsDB_Scr.instance.DBAttcakAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), sountCtrl);
+            _ = AnimationsDB_Scr.instance.DBAttcakAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), soundCtrl);
             await targetEnemy.TakeDamage(damage, Field_Scr.playerMapPos);
         } else {
             _ = targetEnemy.GetPushed(targetEnemy.enemyMapPos - Field_Scr.playerMapPos);
-            await AnimationsDB_Scr.instance.DBAttcakAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), sountCtrl);
+            await AnimationsDB_Scr.instance.DBAttcakAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), soundCtrl);
 
         }
 

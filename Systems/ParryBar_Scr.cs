@@ -6,13 +6,23 @@ using UnityEngine.UI;
 
 public class ParryBar_Scr : MonoBehaviour
 {
+    public static ParryBar_Scr instance;
+
     [SerializeField]
     private Slider mySlider;
 
     [SerializeField]
     private float sliderSpeed = 2f;
 
+    public bool lastResult = false;
 
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+            Destroy(gameObject);
+        else
+            instance = this;
+    }
 
     public async Task<bool> TryToCounter()
     {
@@ -22,7 +32,11 @@ public class ParryBar_Scr : MonoBehaviour
         while (mySlider.value != 1)
         {
             if (destroyCancellationToken.IsCancellationRequested)
+            {
+                lastResult = false;
                 return false;
+            }
+
 
             mySlider.value = Mathf.MoveTowards(mySlider.value, 1, sliderSpeed * Time.deltaTime);
 
@@ -32,6 +46,7 @@ public class ParryBar_Scr : MonoBehaviour
                     result = true;
 
                 gameObject.SetActive(false);
+                lastResult = result;
                 return result;
             }
 
@@ -39,6 +54,7 @@ public class ParryBar_Scr : MonoBehaviour
         }
 
         gameObject.SetActive(false);
+        lastResult = result;
         return result;
     }
 

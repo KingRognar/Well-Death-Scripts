@@ -66,14 +66,18 @@ public class GroundEnemy_Scr : Enemy_Scr
     protected override async Task MakeAttack()
     {
         // TODO: вставить проверки на возможность атаки
+        turnTask = AnimationsDirector_Scr.instance.DirectPlayerGetHit(transform, enemyAnimator, soundCtrl);
+        await turnTask;
+        turnTask = null;
 
-        Task[] tasksList = new Task[2];
+
+/*        Task[] tasksList = new Task[2];
         tasksList[0] = Player_Scr.instance.TakeDamage(enemyDamage, enemyMapPos);
         turnTask = AnimationsDB_Scr.instance.DBAttcakAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(Field_Scr.playerMapPos), soundCtrl);
         tasksList[1] = turnTask;
         await Task.WhenAll(tasksList);
 
-        turnTask = null;
+        turnTask = null;*/
     }
     public override async Task GetPushed(Vector3Int direction)
     {
