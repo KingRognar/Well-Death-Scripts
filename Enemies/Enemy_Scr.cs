@@ -5,9 +5,13 @@ using UnityEngine;
 using TBS;
 
 using static DataBase_Scr;
+using System.Threading;
 
 public abstract class Enemy_Scr : MonoBehaviour
 {
+    CancellationTokenSource cts;
+    CancellationToken cToken; 
+
     public static List<Enemy_Scr> enemiesList = new List<Enemy_Scr>();
 
     public TBSToken tbsToken;
@@ -49,10 +53,13 @@ public abstract class Enemy_Scr : MonoBehaviour
     /// <param name="directionOfHit">Позиция с которой наносится урон</param>
     public async Task TakeDamage(int damage, Vector3Int directionOfHit)
     {
+        cts = new CancellationTokenSource();
+        cToken = cts.Token;
+
         healthCur -= damage;
         if (enemyHealthbar != null)
             enemyHealthbar.UpdateHealthbar(healthMax, healthCur);
-        await AnimationsDB_Scr.instance.DBGetHitAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(directionOfHit), soundCtrl);
+        await AnimationsDB_Scr.instance.DBGetHitAnim(transform, enemyAnimator, Field_Scr.MapToWorldPosition(directionOfHit), soundCtrl, cToken);
         if (healthCur <= 0)
             await Die();
     }

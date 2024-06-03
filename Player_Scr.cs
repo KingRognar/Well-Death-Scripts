@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TBS;
 using static DataBase_Scr;
+using System.Threading;
 
 public class Player_Scr : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class Player_Scr : MonoBehaviour
     private Matrix2x2 controlsRotationMatrix = new Matrix2x2(new float[,] { { 1, 0 }, { 0, 1 } });
 
     public TBSToken tbsToken;
+
+    private CancellationTokenSource cts;
+    private CancellationToken cToken;
 
     private bool isAwaitingTurn = false;
     private bool isAwaitingInput = false;
@@ -74,6 +78,9 @@ public class Player_Scr : MonoBehaviour
     ////---//// Игровые механики ////---////
     public async Task TakeDamage(int damage, Vector3Int enemyPosition) // TODO: получать пиздов
     {
+        cts = new CancellationTokenSource();
+        cToken = cts.Token;
+
 
         parryBar.gameObject.SetActive(true);
         Task<bool> counterTask = parryBar.TryToCounter();
@@ -84,7 +91,7 @@ public class Player_Scr : MonoBehaviour
             Healthbar_Scr.instance.updateHealthbar();
             if (healthCur <= 0)
                 Die();
-            _ = AnimationsDB_Scr.instance.DBGetHitAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), soundCtrl);
+            _ = AnimationsDB_Scr.instance.DBGetHitAnim(transform, playerAnimator, Field_Scr.MapToWorldPosition(enemyPosition), soundCtrl, cToken);
         }
         else
         {

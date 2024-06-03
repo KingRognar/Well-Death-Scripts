@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 public class AnimationsDB_Scr : MonoBehaviour
@@ -200,7 +201,7 @@ public class AnimationsDB_Scr : MonoBehaviour
     }
 
 
-    public async Task DBGetHitAnim(Transform transToAnim, Animator animator, Vector3 targetPos, CreatureSoundController_Scr soundController)
+    public async Task DBGetHitAnim(Transform transToAnim, Animator animator, Vector3 targetPos, CreatureSoundController_Scr soundController, CancellationToken token)
     {
         Vector3 startPos = transToAnim.position;
         Vector3 dif = targetPos - startPos;
@@ -215,8 +216,11 @@ public class AnimationsDB_Scr : MonoBehaviour
         float temp = 0;
         while (temp != 1)
         {
-            if (destroyCancellationToken.IsCancellationRequested)
+            if (destroyCancellationToken.IsCancellationRequested || token.IsCancellationRequested)
+            {
+                transform.position = startPos;
                 return;
+            }
 
             transToAnim.position = startPos + dif * animCurve.Evaluate(temp);
 
